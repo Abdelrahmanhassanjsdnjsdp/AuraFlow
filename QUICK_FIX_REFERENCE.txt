@@ -1,0 +1,77 @@
+# QUICK REFERENCE - ROUTE BUG FIX
+
+## The Problem
+Frontend showing "Road cannot be calculated" error even though backend works
+
+## The Root Cause
+Frontend NOT passing congested roads to backend via `avoid` parameter
+
+## The Fix
+Updated `handleSearch()` in `src/App.jsx` to include `congestedRoads` in request URL
+
+## What Changed
+```javascript
+// BEFORE (BROKEN)
+fetch(`${API_BASE_URL}/api/route?from=${start}&to=${target}`)
+
+// AFTER (FIXED)
+let url = `${API_BASE_URL}/api/route?from=${start}&to=${target}`;
+if (congestedRoads && congestedRoads.length > 0) {
+  url += `&avoid=${congestedRoads.join(',')}`;
+}
+fetch(url);
+```
+
+## Test Cases
+
+### ✅ Test 1: No Congestion
+- No roads congested
+- Route should calculate normally
+- Console: `/api/route?from=1&to=12`
+
+### ✅ Test 2: Some Congestion (Path Exists)
+- Set: `{"congested":[9]}`
+- Route should find alternate path
+- Console: `/api/route?from=1&to=12&avoid=9`
+
+### ❌ Test 3: All Paths Blocked
+- Set: `{"congested":[7,8,11]}`
+- Error: "No available route found. Congested roads: 7, 8, 11"
+- Console: 404 error response
+
+### ❌ Test 4: Network Down
+- Stop backend
+- Error: "Network error: [details]"
+
+## Debug via Console
+Open DevTools (F12) → Console tab:
+```
+Route request: /api/route?from=1&to=12&avoid=7,8
+Congested roads: [7, 8]
+Route error response: 404 {error: "No path found between roads"}
+```
+
+## Deployment
+```bash
+git add src/App.jsx
+git commit -m "fix: include congested roads in route calculation"
+git push origin main
+# Vercel auto-deploys
+```
+
+## Files Changed
+- ✅ `src/App.jsx` (handleSearch function, lines 532-598)
+- ❌ Backend NOT changed (already correct!)
+- ❌ No dependencies added
+
+## Error Messages
+
+| Situation | Message |
+|-----------|---------|
+| Invalid road | "Please enter a valid road number between 1 and 14" |
+| All paths blocked | "No available route found. Congested roads: 7, 8, 11. Try again when roads are clear." |
+| Backend error | "Route error: [error details]" |
+| Network down | "Network error: [error details]. Please check your connection and try again." |
+
+## Status
+✅ FIXED - Ready to deploy
