@@ -59,9 +59,10 @@ To use your own road layout image:
 
 ```bash
 npm run build
-```
+```..
 
 The built files will be in the `dist/` folder.
+
 
 
 
