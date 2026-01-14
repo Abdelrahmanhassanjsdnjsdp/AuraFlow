@@ -1,11 +1,6 @@
 {
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "env": [
-    "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN",
-    "CORS_ORIGIN"
-  ],
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -13,3 +8,4 @@
     }
   ]
 }
+
