@@ -485,7 +485,11 @@ const DashboardScreen = ({ onStartRoute }) => {
    useEffect(() => {
      const pollInterval = setInterval(async () => {
        try {
-const response = await fetch(`/api/state`);
+const response = await fetch("/api/state", {
+  method: "GET",
+  cache: "no-store",
+});
+
          if (!response.ok) {
            console.warn('Polling: Backend returned status', response.status);
            return;
@@ -1244,6 +1248,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
