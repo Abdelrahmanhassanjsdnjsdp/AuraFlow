@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import roadImg from './road-img.jpg';
 
 // API base URL - uses VITE_API_URL env var or empty string (Vercel will serve from same origin)
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 import { 
   MapPin, 
   Navigation, 
@@ -564,7 +563,7 @@ const response = await fetch("/api/state", {
     
     try {
       // Build URL with congested roads as avoid parameter
-      let url = `${API_BASE_URL}/api/route?from=${start}&to=${target}`;
+let url = `/api/route?from=${encodeURIComponent(start)}&to=${encodeURIComponent(target)}`;
       if (congestedRoads && congestedRoads.length > 0) {
         url += `&avoid=${congestedRoads.join(',')}`;
       }
@@ -1248,6 +1247,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
